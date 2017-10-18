@@ -1,23 +1,18 @@
 import * as React from 'react'
 import { Button, Text, View } from 'react-native'
-import {NavigationAction} from 'react-navigation'
 
 import styles from '../styles'
 
 interface IProps extends React.Props<void> {
-  navigation: NavigationAction
+  navigation: { navigate: (screen: string, props?: React.Props<void>) => void }
 }
 
 class TitleScreen extends React.Component<IProps> {
   static navigationOptions = {
-    title: 'TitleScreen',
+    title: 'TitleScreen'
   }
 
-  
-
   render(): JSX.Element {
-    // const { navigate } = this.props.navigation
-    
     return (
       <View style={styles.container}>
         <View style={styles.titleView}>
@@ -27,14 +22,10 @@ class TitleScreen extends React.Component<IProps> {
           <Text style={styles.normalText}>By Avi, Emiley, and Joe</Text>
         </View>
         <Button onPress={() => {
-          // this.props.navigation()
-        }} title='Import Poem'></Button>
+          this.props.navigation.navigate('ImportScreen')
+        }} title='Import Poem'/>
       </View>
     )
-  }
-
-  private _onPress(): void {
-    console.log('WE PRESSED THE BUTTON!')
   }
 }
 
