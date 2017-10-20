@@ -21,7 +21,8 @@ class TitleScreen extends React.Component<IProps> {
           <Text style={styles.title}>App</Text>
           <Text style={styles.normalText}>By Avi, Emiley, and Joe</Text>
         </View>
-        <Button onPress={() => {
+        
+        <Button color='#5de' onPress={() => {
           this.props.navigation.navigate('ImportScreen')
         }} title='Import Poem'/>
       </View>
