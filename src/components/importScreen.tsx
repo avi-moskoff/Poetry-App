@@ -29,7 +29,7 @@ class ImportScreen extends React.Component<IProps> {
 	}
 
 	render(): JSX.Element {
-		console.log(this._poem)
+		// console.log(this._poem)
 		return (
 			<KeyboardAvoidingView
 				behavior='padding'
