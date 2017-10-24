@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, ViewStyle } from 'react-native'
+
+const style: ViewStyle = {} 
 
 const styles: any = StyleSheet.create({
 	container: {
@@ -9,7 +11,7 @@ const styles: any = StyleSheet.create({
 	},
 	importScreen: {
 		flex: 1,
-		// paddingBottom: 50,
+		borderWidth: 5,
 		backgroundColor: '#2c3e50'
 	},
 	titleView: {

@@ -9,12 +9,13 @@ interface IProps extends React.Props<void> {
 
 class ImportScreen extends React.Component<IProps> {
 
-	static navigationOptions = (navigation: { navigate: (screen: string, props?: React.Props<void>) => void }) => ({
+	static navigationOptions = (navigation: { navigation: {navigate: (screen: string, props?: React.Props<void>) => void }}) => ({
 		title: 'ImportScreen',
 		headerRight: <Button
 			title='wat'
 			onPress={() => {
-				navigation.navigate('EditScreen')
+                console.log(navigation)
+				navigation.navigation.navigate('EditScreen')
 			}}
 		/>
 	})
@@ -33,7 +34,8 @@ class ImportScreen extends React.Component<IProps> {
 		return (
 			<KeyboardAvoidingView
 				behavior='padding'
-				style={styles.importScreen}
+                style={styles.importScreen}
+                keyboardVerticalOffset={64}
 			>
 				<TextInput
 					style={styles.normalText}
