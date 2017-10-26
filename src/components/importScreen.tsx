@@ -1,38 +1,21 @@
 import * as React from 'react'
 import { KeyboardAvoidingView, Button, TextInput } from 'react-native'
 
+import INavigation from '../interfaces/INavigation'
+import IProps from '../interfaces/IProps'
+
 import styles from '../styles'
-
-interface INavigation {
-    navigate: (screen: string, props?: IOutgoingProps) => void,
-    setParams: (text: any) => void,
-    state: {
-        key: string,
-        params: {
-            poem: string
-        }
-    }
-}
-
-interface IProps extends React.Props<void> {
-	navigation: INavigation
-}
-
-interface IOutgoingProps extends React.Props<void> {
-    navigation: INavigation,
-    poem: string
-}
 
 class ImportScreen extends React.Component<IProps> {
 
 	static navigationOptions = (navigation: { navigation: INavigation }) => ({
 		title: 'ImportScreen',
 		headerRight: <Button
-			title='wat'
+			title='Next'
 			onPress={() => {
-                console.log(navigation.navigation.state.params.poem)
-                
-				navigation.navigation.navigate('EditScreen', {navigation: navigation.navigation, poem: navigation.navigation.state.params.poem})
+				navigation.navigation.navigate('EditScreen', {
+					poem: !!navigation.navigation.state.params ? navigation.navigation.state.params.poem : ''
+				} )
 			}}
 		/>
 	})
