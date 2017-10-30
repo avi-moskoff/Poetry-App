@@ -1,25 +1,24 @@
 import * as React from 'react'
 import { KeyboardAvoidingView, Button, TextInput } from 'react-native'
 
-import styles from '../styles'
+import INavigation from '../interfaces/INavigation'
+import IProps from '../interfaces/IProps'
 
-interface IProps extends React.Props<void> {
-	navigation: { navigate: (screen: string, props?: React.Props<void>) => void }
-}
+import styles from '../styles'
 
 class ImportScreen extends React.Component<IProps> {
 
-	static navigationOptions = (navigation: { navigate: (screen: string, props?: React.Props<void>) => void }) => ({
+	static navigationOptions = (navigation: { navigation: INavigation }) => ({
 		title: 'ImportScreen',
 		headerRight: <Button
-			title='wat'
+			title='Next'
 			onPress={() => {
-				navigation.navigate('EditScreen')
+				navigation.navigation.navigate('EditScreen', {
+					poem: !!navigation.navigation.state.params ? navigation.navigation.state.params.poem : ''
+				} )
 			}}
 		/>
 	})
-
-	private _poem: string
 
 	constructor(props: IProps) {
 		super(props)
@@ -29,11 +28,11 @@ class ImportScreen extends React.Component<IProps> {
 	}
 
 	render(): JSX.Element {
-		// console.log(this._poem)
 		return (
 			<KeyboardAvoidingView
 				behavior='padding'
-				style={styles.importScreen}
+                style={styles.importScreen}
+                keyboardVerticalOffset={64}
 			>
 				<TextInput
 					style={styles.normalText}
@@ -44,7 +43,7 @@ class ImportScreen extends React.Component<IProps> {
 					autoFocus={true}
 					onChangeText={(poem: string) => {
 						this.setState({ poem })
-						this._poem = poem
+                        this.props.navigation.setParams({poem})
 					}}
 				/>
 			</KeyboardAvoidingView>
