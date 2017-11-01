@@ -34,7 +34,7 @@ class EditScreen extends React.Component<IProps> {
 				}
 			}).then((response: IResponse) => {
 	
-				const responseArray: [IList] = response.response				
+				const responseArray: IList[] = response.response				
 				
 				let synonymArray: string[] = []
 	
