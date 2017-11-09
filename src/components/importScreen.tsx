@@ -22,9 +22,6 @@ class ImportScreen extends React.Component<IProps> {
 
 	constructor(props: IProps) {
 		super(props)
-		this.state = {
-			poem: ''
-		}
 	}
 
 	render(): JSX.Element {
@@ -32,7 +29,7 @@ class ImportScreen extends React.Component<IProps> {
 			<KeyboardAvoidingView
 				behavior='padding'
                 style={styles.importScreen}
-                keyboardVerticalOffset={64}
+                keyboardVerticalOffset={0}
 			>
 				<TextInput
 					style={styles.normalText}
@@ -42,7 +39,7 @@ class ImportScreen extends React.Component<IProps> {
 					multiline={true}
 					autoFocus={true}
 					onChangeText={(poem: string) => {
-						this.setState({ poem })
+						// this.setState({ poem })
                         this.props.navigation.setParams({poem})
 					}}
 				/>
