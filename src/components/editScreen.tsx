@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { View, Text, Button, TextInput, Picker } from 'react-native'
+import ModalDropdown from 'react-native-modal-dropdown'
 
 import INavigation from '../interfaces/INavigation'
 import IProps from '../interfaces/IProps'
@@ -89,21 +90,26 @@ class EditScreen extends React.Component<IProps, IState> {
 			return <View style={styles.container}>
 						{this.poemArray.map((currentWord: string, index: number) => {
 
-							console.log(this.synonymMap[currentWord])
+							const currentWordNormalized: string = currentWord.toLowerCase()
 
-							if(!!this.synonymMap[currentWord] && this.synonymMap[currentWord].length > 0) {
+							// console.log(this.synonymMap[currentWordNormalized])
+
+							if(!!this.synonymMap[currentWordNormalized] && this.synonymMap[currentWordNormalized].length > 0) {
 								console.log('Drop down activated')
-								return <Picker 
-											style={{width: 100}} 								
-											key={currentWord + index}
-											selectedValue={currentWord}
-											onValueChange={() => undefined}
-										>
-											<Picker.Item label={currentWord} value={currentWord}/>
-											<Picker.Item label='wat' value='wat'/>
-										</Picker>
+								return <ModalDropdown 
+									key={currentWordNormalized + index}
+									defaultIndex={0}
+									defaultValue={currentWordNormalized}
+									textStyle={styles.highlightedText}
+									dropdownStyle={styles.dropdown}
+									dropdownTextStyle={styles.dropdownText}
+									options={[currentWordNormalized, ...this.synonymMap[currentWordNormalized]]}
+								/>
 							}
-							return <Text key={currentWord + index}>{currentWord}</Text>
+							return <Text 
+								key={currentWordNormalized + index}
+								style={styles.normalText}
+							>{currentWord}</Text>
 						})}
 					</View>
 		}	

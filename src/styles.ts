@@ -14,6 +14,9 @@ const styles: any = StyleSheet.create({
 		borderWidth: 5,
 		backgroundColor: '#2c3e50'
 	},
+	dropdown:{
+		width: 125
+	},
 	titleView: {
 		flex: 0.4,
 		backgroundColor: '#2c3e50',
@@ -28,6 +31,16 @@ const styles: any = StyleSheet.create({
 		fontSize: 30,
 		color: '#ecf0f1',
 		padding: 10
+	},
+	highlightedText: {
+		fontSize: 30,
+		color: '#5de',
+		padding: 10
+
+	},
+	dropdownText: {
+		color: '#2c3e50',
+		fontSize: 20
 	},
 	button: {
 		color: '#ecf0f1'
