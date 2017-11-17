@@ -9,6 +9,13 @@ const styles: any = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-around',
 	},
+	scroll: {
+		backgroundColor: '#2c3e50'
+	},
+	line: {
+		flex: 1,
+		flexDirection: 'row'
+	},
 	importScreen: {
 		flex: 1,
 		borderWidth: 5,
@@ -41,9 +48,6 @@ const styles: any = StyleSheet.create({
 	dropdownText: {
 		color: '#2c3e50',
 		fontSize: 20
-	},
-	button: {
-		color: '#ecf0f1'
 	}
 })
 

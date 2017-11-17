@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text, Button, TextInput, Picker } from 'react-native'
+import { ScrollView, View, Text, Button, TextInput, Picker } from 'react-native'
 import ModalDropdown from 'react-native-modal-dropdown'
 
 import INavigation from '../interfaces/INavigation'
@@ -25,7 +25,7 @@ class EditScreen extends React.Component<IProps, IState> {
 		}
 	}
 
-	private poemArray: string[]
+	private poemArray: string[][]
 
 	private promiseArray: Promise<string[]>[]
 
@@ -33,9 +33,17 @@ class EditScreen extends React.Component<IProps, IState> {
 
 	componentWillMount(): void {
 
-		this.poemArray = this.props.navigation.state.params.poem.split(/[ \n\r\t]/g)
+		// this.poemArray = this.props.navigation.state.params.poem.split(/[ \n\r\t]/g)
 
-		this.promiseArray = this.poemArray.reduce((uniqueWords: string[], currentWord: string) => {
+		this.poemArray = this.props.navigation.state.params.poem.split(/\n/g).map((line: string) => {
+			return line.split(/ /g)
+		})
+
+		console.log(this.poemArray)
+
+		this.promiseArray = this.poemArray.reduce((flattenedArray: string[], currentArray: string[], []) => {
+			return flattenedArray.concat(currentArray)
+		}).reduce((uniqueWords: string[], currentWord: string) => {
 			currentWord = currentWord.toLowerCase()
 			if (!uniqueWords.includes(currentWord)) {
 				uniqueWords.push(currentWord)
@@ -87,8 +95,10 @@ class EditScreen extends React.Component<IProps, IState> {
 			return <Text>Loading</Text>
 		} else {
 			// console.log(this.synonymMap)
-			return <View style={styles.container}>
-						{this.poemArray.map((currentWord: string, index: number) => {
+			return <ScrollView style={styles.scroll}>
+				{this.poemArray.map((currentLine: string[], index: number) => {
+					return <View key={index} style={styles.line}>
+						{currentLine.map((currentWord: string, index: number) => {
 
 							const currentWordNormalized: string = currentWord.toLowerCase()
 
@@ -99,11 +109,11 @@ class EditScreen extends React.Component<IProps, IState> {
 								return <ModalDropdown 
 									key={currentWordNormalized + index}
 									defaultIndex={0}
-									defaultValue={currentWordNormalized}
-									textStyle={styles.highlightedText}
-									dropdownStyle={styles.dropdown}
-									dropdownTextStyle={styles.dropdownText}
-									options={[currentWordNormalized, ...this.synonymMap[currentWordNormalized]]}
+										defaultValue={currentWordNormalized}
+										textStyle={styles.highlightedText}
+										dropdownStyle={styles.dropdown}
+										dropdownTextStyle={styles.dropdownText}
+										options={[currentWordNormalized, ...this.synonymMap[currentWordNormalized]]}
 								/>
 							}
 							return <Text 
@@ -112,8 +122,10 @@ class EditScreen extends React.Component<IProps, IState> {
 							>{currentWord}</Text>
 						})}
 					</View>
+				})}			
+			</ScrollView>
 		}	
 	}
-}
+} 
 
 export default EditScreen
