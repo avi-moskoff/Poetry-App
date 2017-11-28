@@ -31,27 +31,31 @@ class EditScreen extends React.Component<IProps, IState> {
 
 	private synonymMap: { [index: string]: string[] } = {}
 
+	private blackList: string[] = ['shit', 'piss', 'fuck', 'cunt', 'cocksucker', 'motherfucker', 'tits', 'Negro', 'eff', 'nigger']
+
+	private makeUnique = (uniqueWords: string[], currentWord: string) => {
+		currentWord = currentWord.toLowerCase()
+
+		if(!uniqueWords.includes(currentWord)) {
+			uniqueWords.push(currentWord)
+		}
+
+		return uniqueWords
+	}
+
 	componentWillMount(): void {
 
-		// this.poemArray = this.props.navigation.state.params.poem.split(/[ \n\r\t]/g)
-
 		this.poemArray = this.props.navigation.state.params.poem.split(/\n/g).map((line: string) => {
-			return line.split(/ /g)
+			return line.split(/([ -&(-/:-@[-`{-~\t])/g)
 		})
 
 		console.log(this.poemArray)
 
 		this.promiseArray = this.poemArray.reduce((flattenedArray: string[], currentArray: string[], []) => {
 			return flattenedArray.concat(currentArray)
-		}).reduce((uniqueWords: string[], currentWord: string) => {
-			currentWord = currentWord.toLowerCase()
-			if (!uniqueWords.includes(currentWord)) {
-				uniqueWords.push(currentWord)
-			}
-			return uniqueWords
-		}, []).reduce((promises: Promise<string[]>[], currentWord: string) => {
+		}).reduce(this.makeUnique, []).reduce((promises: Promise<string[]>[], currentWord: string) => {
 			const value = promises.push(
-				fetch(`http://thesaurus.altervista.org/thesaurus/v1?key=bD9XnankasfsfRsNcn2c&language=en_US&output=json&word=${currentWord}`).catch((error: any) => {
+				fetch(`http://thesaurus.altervista.org/thesaurus/v1?key=bD9XnankasfsfRsNcn2c&language=en_US&output=json&word=${currentWord.toLowerCase()}`).catch((error: any) => {
 					console.log(error)
 				}).then((response: Response | void) => {
 					if (!!response && response.ok) {
@@ -67,16 +71,12 @@ class EditScreen extends React.Component<IProps, IState> {
 						let prunedSynonymArray: string[] = []
 
 						if (responseArray.length > 0) {
-							responseArray.forEach((list: IList) => {
-								list.list.synonyms.split('|').filter((synonym: string) => !(synonym.includes('(') || synonym.includes(' '))).forEach((synonym: string) => {
-									if (!synonymArray.includes(synonym)) {
-										synonymArray.splice(Math.floor(Math.random() * synonymArray.length), 0, synonym)
-									}
-								})
-							})
+							this.synonymMap[currentWord] = responseArray.reduce((synonymList: string[], list: IList) => {
+								return synonymList.concat(list.list.synonyms.split('|'))
+							}, [])
+							.filter((synonym: string) => !(synonym.includes('(') || synonym.includes(' ') || this.blackList.includes(synonym)))
+							.reduce(this.makeUnique, [])
 						}
-
-						this.synonymMap[currentWord] = synonymArray.slice(0, 5)
 
 						resolve()
 					}))
@@ -86,6 +86,7 @@ class EditScreen extends React.Component<IProps, IState> {
 
 		Promise.all(this.promiseArray).then(() => {
 			this.setState({isDone: true})
+
 		})
 	}
 
@@ -94,15 +95,16 @@ class EditScreen extends React.Component<IProps, IState> {
 		if(!this.state.isDone) {
 			return <Text>Loading</Text>
 		} else {
-			// console.log(this.synonymMap)
 			return <ScrollView style={styles.scroll}>
 				{this.poemArray.map((currentLine: string[], index: number) => {
 					return <View key={index} style={styles.line}>
 						{currentLine.map((currentWord: string, index: number) => {
 
-							const currentWordNormalized: string = currentWord.toLowerCase()
+							if(currentWord === ' '){
+								return
+							}
 
-							// console.log(this.synonymMap[currentWordNormalized])
+							const currentWordNormalized: string = currentWord.toLowerCase()
 
 							if(!!this.synonymMap[currentWordNormalized] && this.synonymMap[currentWordNormalized].length > 0) {
 								console.log('Drop down activated')

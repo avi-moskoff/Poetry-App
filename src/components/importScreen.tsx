@@ -29,7 +29,7 @@ class ImportScreen extends React.Component<IProps> {
 			<KeyboardAvoidingView
 				behavior='padding'
                 style={styles.importScreen}
-                keyboardVerticalOffset={0}
+                keyboardVerticalOffset={50}
 			>
 				<TextInput
 					style={styles.normalText}
