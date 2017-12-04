@@ -14,9 +14,17 @@ interface IState {
 }
 
 class EditScreen extends React.Component<IProps, IState> {
-	static navigationOptions = {
-		title: 'EditScreen'
-	}
+	static navigationOptions = (navigation: { navigation: INavigation }) => ({
+		title: 'EditScreen',
+		headerRight: <Button
+			title='Export'
+			onPress={() => {
+				navigation.navigation.navigate('ExportScreen', {
+					poem: !!navigation.navigation.state.params.poem? navigation.navigation.state.params.poem : ''
+				} )
+			}}
+		/>
+	})
 
 	constructor(props: IProps) {
 		super(props)
@@ -31,7 +39,9 @@ class EditScreen extends React.Component<IProps, IState> {
 
 	private synonymMap: { [index: string]: string[] } = {}
 
-	private blackList: string[] = ['shit', 'piss', 'fuck', 'cunt', 'cocksucker', 'motherfucker', 'tits', 'Negro', 'eff', 'nigger']
+	private poemToExport: string[][]
+
+	private blackList: string[] = ['shit', 'piss', 'fuck', 'fucking', 'cunt', 'cocksucker', 'motherfucker', 'tits', 'Negro', 'eff', 'nigger']
 
 	private makeUnique = (uniqueWords: string[], currentWord: string) => {
 		currentWord = currentWord.toLowerCase()
@@ -49,7 +59,19 @@ class EditScreen extends React.Component<IProps, IState> {
 			return line.split(/([ -&(-/:-@[-`{-~\t])/g)
 		})
 
-		console.log(this.poemArray)
+		this.poemToExport = JSON.parse(JSON.stringify(this.poemArray))
+
+		this.props.navigation.setParams({poem: this.poemToExport.reduce((fullPoem: string, currentLine: string[]) => {
+			if(typeof currentLine === 'object') {
+				return `${fullPoem}\n${currentLine.reduce((fullLine: string, currentWord: string) => {
+					return fullLine + currentWord
+				}, '')}`
+			}
+
+			return fullPoem
+		}, '')})
+
+		// console.log(this.poemArray)
 
 		this.promiseArray = this.poemArray.reduce((flattenedArray: string[], currentArray: string[], []) => {
 			return flattenedArray.concat(currentArray)
@@ -86,19 +108,17 @@ class EditScreen extends React.Component<IProps, IState> {
 
 		Promise.all(this.promiseArray).then(() => {
 			this.setState({isDone: true})
-
 		})
 	}
 
 	render(): JSX.Element {
-		console.log('re-rendering...' + this.state.isDone)
 		if(!this.state.isDone) {
 			return <Text>Loading</Text>
 		} else {
 			return <ScrollView style={styles.scroll}>
 				{this.poemArray.map((currentLine: string[], index: number) => {
 					return <View key={index} style={styles.line}>
-						{currentLine.map((currentWord: string, index: number) => {
+						{currentLine.map((currentWord: string, wordIndex: number) => {
 
 							if(currentWord === ' '){
 								return
@@ -107,19 +127,33 @@ class EditScreen extends React.Component<IProps, IState> {
 							const currentWordNormalized: string = currentWord.toLowerCase()
 
 							if(!!this.synonymMap[currentWordNormalized] && this.synonymMap[currentWordNormalized].length > 0) {
-								console.log('Drop down activated')
 								return <ModalDropdown 
-									key={currentWordNormalized + index}
+									key={index + currentWordNormalized + wordIndex}
 									defaultIndex={0}
-										defaultValue={currentWordNormalized}
-										textStyle={styles.highlightedText}
-										dropdownStyle={styles.dropdown}
-										dropdownTextStyle={styles.dropdownText}
-										options={[currentWordNormalized, ...this.synonymMap[currentWordNormalized]]}
+									defaultValue={currentWordNormalized}
+									textStyle={styles.highlightedText}
+									dropdownStyle={styles.dropdown}
+									dropdownTextStyle={styles.dropdownText}
+									options={[currentWordNormalized, ...this.synonymMap[currentWordNormalized]]}
+									onSelect={(optionIndex: number, value: string) => {
+										this.poemToExport[index][wordIndex] = value
+
+										this.props.navigation.setParams({poem: this.poemToExport.reduce((fullPoem: string, currentLine: string[]) => {
+											if(typeof currentLine === 'object') {
+												return `${fullPoem}\n${currentLine.reduce((fullLine: string, currentWord: string) => {
+													return fullLine + currentWord
+												}, '')}`
+											}
+								
+											return fullPoem
+										}, '')})
+
+										// console.log(this.poemArray)
+									}}
 								/>
 							}
 							return <Text 
-								key={currentWordNormalized + index}
+								key={index + currentWordNormalized + wordIndex}
 								style={styles.normalText}
 							>{currentWord}</Text>
 						})}
