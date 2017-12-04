@@ -41,7 +41,7 @@ class EditScreen extends React.Component<IProps, IState> {
 
 	private poemToExport: string[][]
 
-	private blackList: string[] = ['shit', 'piss', 'fuck', 'cunt', 'cocksucker', 'motherfucker', 'tits', 'Negro', 'eff', 'nigger']
+	private blackList: string[] = ['shit', 'piss', 'fuck', 'fucking', 'cunt', 'cocksucker', 'motherfucker', 'tits', 'Negro', 'eff', 'nigger']
 
 	private makeUnique = (uniqueWords: string[], currentWord: string) => {
 		currentWord = currentWord.toLowerCase()
