@@ -6,7 +6,7 @@ interface IList {
 }
 
 interface IResponse {
-	response: [IList]
+	response: IList[]
 }
 
 export { IResponse, IList }

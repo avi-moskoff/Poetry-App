@@ -19,7 +19,7 @@ class TitleScreen extends React.Component<IProps> {
 					<Text style={styles.title}>Feiran's</Text>
 					<Text style={styles.title}>Poetry</Text>
 					<Text style={styles.title}>App</Text>
-					<Text style={styles.normalText}>By Avi, Emiley, and Joe</Text>
+					<Text style={styles.normalText}>By Joe, Ian, Avi, and Emiley</Text>
 				</View>
 
 				<Button
